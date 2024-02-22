@@ -42,7 +42,7 @@ describe('POST /rsvp', () => {
     let res;
   
     beforeAll(async () => {
-    //   Example form submission
+    //   Example 
       const requestBody = {
         name: 'Tester',
         number: '21342020',

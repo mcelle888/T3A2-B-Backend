@@ -17,14 +17,13 @@ const closeConnection = () => {
     mongoose.disconnect()
 }
 
-const detailsSchema = new mongoose.Schema({
-    name1: { type: String, required: true },
-    name2: { type: String, required: true},
-    date: {type: Date, required: true},
-    venue: {type: String, required: true}
+const userSchema = new mongoose.Schema({
+    user: {type: String, required: true},
+    pincode: {type: String, required: true},
+    isAdmin: {type: Boolean, required: true}
 })
 
-const DetailModel = mongoose.model('Detail', detailsSchema)
+const UserModel = mongoose.model('User', userSchema)
 
 const repliesSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -40,4 +39,4 @@ const repliesSchema = new mongoose.Schema({
 
 const ReplyModel = mongoose.model('Reply', repliesSchema)
 
-export { ReplyModel, DetailModel, closeConnection }
+export { ReplyModel, UserModel, closeConnection }
