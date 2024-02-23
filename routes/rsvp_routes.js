@@ -14,7 +14,7 @@ router.get('/responses', authenticateUser, authenticateAdmin, async (req, res) =
   }
 })
 
-// Create a new reply (Token holders only)
+// Create a new reply  
 router.post('/rsvp', authenticateUser, async (req, res) => {
   try {
     if (req.decodedToken) {
@@ -45,7 +45,7 @@ router.post('/rsvp', authenticateUser, async (req, res) => {
 
   
 // Update an entry
-  router.put('/rsvp/:response_id', authenticateUser,  async (req, res) => {
+  router.put('/rsvp/:response_id',  async (req, res) => {
     const { response_id } = req.params
     const { name, number, email, ceremony, reception, guests, dietry, message } = req.body
     
