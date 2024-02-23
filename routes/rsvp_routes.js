@@ -1,70 +1,62 @@
+import { Router } from 'express'
 import { ReplyModel } from '../db.js'
-import { Router } from "express"
+import { authenticateUser, authenticateAdmin } from '../authentication.js'
+
+
 
 const router = Router()
 
-router.get('/rsvp', async (req, res) => res.status(200).send(await ReplyModel.find()))
-
-router.get('/rsvp/:id', async (req, res) => {
-    const response = await ReplyModel.findById(req.params.id)
-    if (response) {
-        res.send(response)
-    } else {
-        res.status(404).send({error: 'Response not found'})
-    }
+// Get all replies (admin only)
+router.get('/responses', authenticateUser, authenticateAdmin, async (req, res) => {
+  try {
+    const replies = await ReplyModel.find()
+    res.status(200).json(replies)
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
 })
 
-// Post request
-
-router.post('/rsvp', async (req, res) => {
+// Create a new reply (token holders only)
+router.post('/rsvp', authenticateUser, async (req, res) => {
     try {
-
-    const insertedReply = await ReplyModel.create(req.body)
-    res.status(201).send(insertedReply)
-    } 
-    catch (err) {
-        res.status(400).send( {error: err.message} )
+      if (req.decodedToken && req.decodedToken.isAdmin) {
+        const insertedReply = await ReplyModel.create(req.body);
+        return res.status(201).json(insertedReply);
+      } else {
+        return res.status(403).json({ error: 'Forbidden. Only admin users are allowed.' });
+      }
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
     }
+  });
+  
 
-})
-
-// Put request
-
-router.put('/rsvp/:id', async (req, res) => {
-    try {
+// Update a reply (token holders only)
+router.put('/rsvp/:id', authenticateUser, async (req, res) => {
+  try {
     const updatedReply = await ReplyModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
-
     if (updatedReply) {
-        res.send(updatedReply)
+      res.status(200).json(updatedReply)
     } else {
-        res.status(404).send({ error: 'Reply not found'})
+      res.status(404).json({ error: 'Reply not found' })
     }
-    
-    } 
-    catch (err) {
-        res.status(500).send( {error: err.message} )
-    }
-
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
 })
 
-// Delete reply
-
-
-router.delete('/rsvp/:id', async (req, res) => {
-    try {
+// Delete a reply (accessible to admin only)
+router.delete('/rsvp/:id', authenticateUser, authenticateAdmin, async (req, res) => {
+  try {
     const deletedReply = await ReplyModel.findByIdAndDelete(req.params.id)
-
     if (deletedReply) {
-        res.sendStatus(204)
+      res.sendStatus(204)
     } else {
-        res.status(404).send({ error: 'Reply not found'})
+      res.status(404).json({ error: 'Reply not found' })
     }
-    
-    } 
-    catch (err) {
-        res.status(500).send( {error: err.message} )
-    }
-
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
 })
 
 export default router
