@@ -18,18 +18,17 @@ router.get('/responses', authenticateUser, authenticateAdmin, async (req, res) =
 
 // Create a new reply (token holders only)
 router.post('/rsvp', authenticateUser, async (req, res) => {
-    try {
-      if (req.decodedToken && req.decodedToken.isAdmin) {
-        const insertedReply = await ReplyModel.create(req.body)
-        return res.status(201).json(insertedReply)
-      } else {
-        return res.status(403).json({ error: 'Forbidden. Only admin users are allowed.' })
-      }
-    } catch (error) {
-      return res.status(400).json({ error: error.message })
+  try {
+    if (req.decodedToken) {
+      const insertedReply = await ReplyModel.create(req.body)
+      return res.status(201).json(insertedReply)
+    } else {
+      return res.status(403).json({ error: 'Forbidden. Authentication token required.' })
     }
-  })
-
+  } catch (error) {
+    return res.status(400).json({ error: error.message })
+  }
+})
   // Get a specific entry
 
   router.get('/rsvp/:response_id', async (req, res) => {
