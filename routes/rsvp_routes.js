@@ -2,11 +2,9 @@ import { Router } from 'express'
 import { ReplyModel } from '../db.js'
 import { authenticateUser, authenticateAdmin } from '../authentication.js'
 
-
-
 const router = Router()
 
-// Get all replies (admin only)
+// Get all replies (Admin only)
 router.get('/responses', authenticateUser, authenticateAdmin, async (req, res) => {
   try {
     const replies = await ReplyModel.find()
@@ -16,7 +14,7 @@ router.get('/responses', authenticateUser, authenticateAdmin, async (req, res) =
   }
 })
 
-// Create a new reply (token holders only)
+// Create a new reply (Token holders only)
 router.post('/rsvp', authenticateUser, async (req, res) => {
   try {
     if (req.decodedToken) {
@@ -29,8 +27,8 @@ router.post('/rsvp', authenticateUser, async (req, res) => {
     return res.status(400).json({ error: error.message })
   }
 })
-  // Get a specific entry
 
+  // Get a specific entry
   router.get('/rsvp/:response_id', async (req, res) => {
     try {
       const { response_id } = req.params
@@ -46,8 +44,8 @@ router.post('/rsvp', authenticateUser, async (req, res) => {
   })
 
   
-// update an entry
-  router.put('/rsvp/:response_id',  async (req, res) => {
+// Update an entry
+  router.put('/rsvp/:response_id', authenticateUser,  async (req, res) => {
     const { response_id } = req.params
     const { name, number, email, ceremony, reception, guests, dietry, message } = req.body
     
@@ -76,19 +74,4 @@ router.post('/rsvp', authenticateUser, async (req, res) => {
     }
   })
   
-
-// // Delete a reply (accessible to admin only)
-// router.delete('/rsvp/:id', authenticateUser, authenticateAdmin, async (req, res) => {
-//   try {
-//     const deletedReply = await ReplyModel.findByIdAndDelete(req.params.id)
-//     if (deletedReply) {
-//       res.sendStatus(204)
-//     } else {
-//       res.status(404).json({ error: 'Reply not found' })
-//     }
-//   } catch (error) {
-//     res.status(500).json({ error: error.message })
-//   }
-// })
-
 export default router
