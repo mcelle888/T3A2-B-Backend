@@ -1,28 +1,33 @@
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 
+// Database connection
 dotenv.config()
 
 try {
     const m = await mongoose.connect(process.env.DB_URI)
-    console.log(m.connection.readyState === 1 ? 'MongoDB connected!' : 'MongoDB failed to connect')
-} catch (err) {
-    console.log(err)
+    console.log(m.connection.readyState === 1 ? 'MongoDB connected!' : 'MongoDB failed  to connect')
 }
+
+    catch (err) {
+        console.log(err)
+    }
 
 const closeConnection = () => {
     console.log('Mongoose Disconnecting...')
     mongoose.disconnect()
 }
 
+// User Schema
 const userSchema = new mongoose.Schema({
-    user: { type: String, required: true },
-    pincode: { type: String, required: true },
-    isAdmin: { type: Boolean, required: true }
+    user: {type: String, required: true},
+    pincode: {type: String, required: true},
+    isAdmin: {type: Boolean, required: true}
 })
 
 const UserModel = mongoose.model('User', userSchema)
 
+// Rsvp Replies Schema
 const repliesSchema = new mongoose.Schema({
     name: { type: String, required: true },
     number: { type: String, required: true },
@@ -36,9 +41,10 @@ const repliesSchema = new mongoose.Schema({
 
 })
 
+// Function to add a response_id to new entries through a pre-save hook meaning it runs before documents are saved into the database
 repliesSchema.pre('save', function(next) {
     if (!this.response_id) {
-      // Generate a random 4-digit number
+      // Generates a random 4-digit number 
       this.response_id = Math.floor(1000 + Math.random() * 9000)
     }
     next()

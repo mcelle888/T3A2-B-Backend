@@ -7,7 +7,7 @@ const router = express.Router()
 // Middleware to authenticate user
 const authenticateUser = async (req, res, next) => {
   try {
-    // Check if authorization header is present
+    // Check if authorisation header is present
     const authHeader = req.headers['authorization']
     if (!authHeader) {
       return res.status(401).json({ error: 'Authorization header is missing' })
@@ -17,7 +17,7 @@ const authenticateUser = async (req, res, next) => {
       return res.status(401).json({ error: 'Token is missing' })
     }
 
-    // Verify token
+    // Verifies token
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY)
     req.decodedToken = decodedToken
     next()
@@ -47,17 +47,5 @@ const authenticateAdmin = async (req, res, next) => {
   };
   
 
-  
-// Middleware to authenticate guest
-const authenticateGuest = async (req, res, next) => {
-  try {
-    if (!req.decodedToken) {
-      return res.status(401).json({ error: 'Token is missing' })
-    }
-    next()
-  } catch (error) {
-    return res.status(500).json({ error: error.message })
-  }
-}
 
-export {authenticateAdmin, authenticateGuest, authenticateUser}
+export {authenticateAdmin, authenticateUser}
