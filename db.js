@@ -5,12 +5,10 @@ dotenv.config()
 
 try {
     const m = await mongoose.connect(process.env.DB_URI)
-    console.log(m.connection.readyState === 1 ? 'MongoDB connected!' : 'MongoDB failed  to connect')
+    console.log(m.connection.readyState === 1 ? 'MongoDB connected!' : 'MongoDB failed to connect')
+} catch (err) {
+    console.log(err)
 }
-
-    catch (err) {
-        console.log(err)
-    }
 
 const closeConnection = () => {
     console.log('Mongoose Disconnecting...')
@@ -18,9 +16,9 @@ const closeConnection = () => {
 }
 
 const userSchema = new mongoose.Schema({
-    user: {type: String, required: true},
-    pincode: {type: String, required: true},
-    isAdmin: {type: Boolean, required: true}
+    user: { type: String, required: true },
+    pincode: { type: String, required: true },
+    isAdmin: { type: Boolean, required: true }
 })
 
 const UserModel = mongoose.model('User', userSchema)
@@ -34,7 +32,19 @@ const repliesSchema = new mongoose.Schema({
     guests: String,
     dietry: String,
     message: String,
+    response_id: { type: Number }
+})
 
+repliesSchema.pre('save', async function (next) {
+    try {
+        if (!this.response_id) {
+            const count = await this.constructor.countDocuments()
+            this.response_id = count + 1
+        }
+        next()
+    } catch (error) {
+        next(error)
+    }
 })
 
 const ReplyModel = mongoose.model('Reply', repliesSchema)
