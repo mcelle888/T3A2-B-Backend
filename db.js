@@ -32,21 +32,20 @@ const repliesSchema = new mongoose.Schema({
     guests: String,
     dietry: String,
     message: String,
-    response_id: { type: Number }
+    response_id: {type: Number, unique: true,}
+
 })
 
-repliesSchema.pre('save', async function (next) {
-    try {
-        if (!this.response_id) {
-            const count = await this.constructor.countDocuments()
-            this.response_id = count + 1
-        }
-        next()
-    } catch (error) {
-        next(error)
+repliesSchema.pre('save', function(next) {
+    if (!this.response_id) {
+      // Generate a random 4-digit number
+      this.response_id = Math.floor(1000 + Math.random() * 9000)
     }
-})
+    next()
+  })
+
 
 const ReplyModel = mongoose.model('Reply', repliesSchema)
 
 export { ReplyModel, UserModel, closeConnection }
+
