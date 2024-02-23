@@ -4,6 +4,7 @@ import { ReplyModel, UserModel, closeConnection } from "./db.js"
 const replies = [
     { name: 'Michelle', number: '0420222000', email: 'michelle@gmail.com', ceremony: 'True',reception: 'True', guests: 'Noone',dietry: 'Vegan', message: 'Congrats!', response_id: 1234},
     { name: 'Tim', number: '0420000220', email: 'tim@example.com', ceremony: 'True', reception: 'True', guests: 'None', dietry: 'Vegan', message: 'hi', response_id: 1232}
+
 ]
 
 const users = [
