@@ -10,36 +10,35 @@ const router = Router()
 const jwtkey = process.env.JWT_SECRET_KEY
 
 
-// POST request for user login
+// POST request handler for user login
 router.post('/', async (req, res) => {
-  const { pincode } = req.body
-  
+  const { pincode } = req.body; // Extracting pincode from request body
 
   try {
-    const foundUser = await UserModel.findOne({ pincode })
-    
+    // Finding a user with the provided pincode
+    const foundUser = await UserModel.findOne({ pincode });
 
     if (foundUser) {
+      // Generating JWT token payload
       const tokenPayload = {
         userID: foundUser._id,
         isAdmin: foundUser.isAdmin
       };
+      // Signing the token with JWT secret key and setting expiration time to 2 hours
       const token = jwt.sign(tokenPayload, jwtkey, { expiresIn: '2h' });
       
-      res.status(200).json({ token })
-      
+      // Sending token in the response if user is found
+      res.status(200).json({ token });
     } else {
-      res.status(401).json({ error: 'Invalid pincode' })
-      
+      // Responding with error if user is not found
+      res.status(401).json({ error: 'Invalid pincode' });
     }
   } catch (error) {
-    console.error('Error logging in:', error)
-    
-    res.status(500).json({ error: 'An error occurred while logging in' })
-    
+    // Handling errors that occur during login process
+    console.error('Error logging in:', error);
+    res.status(500).json({ error: 'An error occurred while logging in' });
   }
-})
+});
 
-
-export default router
+export default router; // Exporting the router for use in other modules
 
