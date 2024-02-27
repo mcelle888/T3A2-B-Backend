@@ -12,14 +12,14 @@ const jwtkey = process.env.JWT_SECRET_KEY
 
 // POST request handler for user login
 router.post('/', async (req, res) => {
-  const { pincode } = req.body; // Extracting pincode from request body
+  const { pincode } = req.body;  
 
   try {
     // Finding a user with the provided pincode
     const foundUser = await UserModel.findOne({ pincode });
 
     if (foundUser) {
-      // Generating JWT token payload
+      // Generating JWT token  
       const tokenPayload = {
         userID: foundUser._id,
         isAdmin: foundUser.isAdmin
@@ -40,5 +40,5 @@ router.post('/', async (req, res) => {
   }
 });
 
-export default router; // Exporting the router for use in other modules
+export default router;  
 
