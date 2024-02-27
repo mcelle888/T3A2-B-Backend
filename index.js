@@ -2,4 +2,4 @@
 import app from './app.js'
 
 // Starting the Express application to listen for incoming requests on port 8001
-app.listen(8001)
+app.listen (process.env.PORT || 8001)
