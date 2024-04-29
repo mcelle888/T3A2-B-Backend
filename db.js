@@ -31,7 +31,7 @@ const UserModel = mongoose.model('User', userSchema)
 const repliesSchema = new mongoose.Schema({
     name: { type: String, required: true },
     number: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: false },
     ceremony: { type: String, required: true },
     reception: { type: String, required: true },
     guests: String,
